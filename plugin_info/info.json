@@ -9,5 +9,10 @@
 	"category" : "energy",
 	"hasOwnDeamon" : false,
 	"changelog" : "https://trmaud.github.io/Docs/Palazzetti/fr_FR/changelog",
-	"documentation" : "https://trmaud.github.io/Docs/Palazzetti/fr_FR/"
+	"documentation" : "https://trmaud.github.io/Docs/Palazzetti/fr_FR/",
+	"link" : {
+		"forum":""
+	},
+	"language" : ["fr_FR"],
+	"compatibility" : ["miniplus","smart","rpi","docker","diy","v4"]
 }
