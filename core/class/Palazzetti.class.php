@@ -100,7 +100,7 @@ class Palazzetti extends eqLogic {
 			if ($Cmd['Unite'] != '') {
 				$PalazzettiCmd->setType($Cmd['Unite']);
 			}
-			if ($Cmd['IsHistorized'] != true) {
+			if ($Cmd['IsHistorized'] == true) {
 				$PalazzettiCmd->setIsHistorized(1);
 			}
 			$PalazzettiCmd->setOrder($Order);
