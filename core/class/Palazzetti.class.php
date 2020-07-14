@@ -69,8 +69,8 @@ class Palazzetti extends eqLogic {
 			'IHeuresSurChauffe'=>array('Libelle'=>'Nombre d\'heures de surchauffe','actionCmd'=>'','updateLogicalId'=>'','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'IHeuresSurChauffe','Type'=>'info','SubType'=>'string','Unite'=>'','IsHistorized'=>false,'visible'=>0, 'Template' => ''),
 			'RHeuresDepuisEntretien'=>array('Libelle'=>'Lecture heures depuis entretien','actionCmd'=>'EXT+ADRD+2076+1','updateLogicalId'=>'IHeuresDepuisEntretien','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'RHeuresDepuisEntretien','Type'=>'action','SubType'=>'other','Unite'=>'','IsHistorized'=>false,'visible'=>0, 'Template' => ''),
 			'IHeuresDepuisEntretien'=>array('Libelle'=>'Nombre d\'heures depuis entretien','actionCmd'=>'','updateLogicalId'=>'','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'IHeuresDepuisEntretien','Type'=>'info','SubType'=>'string','Unite'=>'','IsHistorized'=>false,'visible'=>0, 'Template' => ''),
-			'Temp'=>array('Libelle'=>'Temperature ambiance','actionCmd'=>'','updateLogicalId'=>'','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'ITemp','Type'=>'info','SubType'=>'numeric','Unite'=>'','IsHistorized'=>true,'visible'=>1, 'Template' => ''),
-			'Consigne'=>array('Libelle'=>'Temperature de consigne','actionCmd'=>'','updateLogicalId'=>'','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'IConsigne','Type'=>'info','SubType'=>'numeric','Unite'=>'','IsHistorized'=>true,'visible'=>1, 'Template' => '')
+			'Temp'=>array('Libelle'=>'Température ambiance','actionCmd'=>'','updateLogicalId'=>'','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'ITemp','Type'=>'info','SubType'=>'numeric','Unite'=>'','IsHistorized'=>true,'visible'=>1, 'Template' => ''),
+			'Consigne'=>array('Libelle'=>'Température de consigne','actionCmd'=>'','updateLogicalId'=>'','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'IConsigne','Type'=>'info','SubType'=>'string','Unite'=>'','IsHistorized'=>true,'visible'=>1, 'Template' => '')
 		);
 
 		//Chaque commande
