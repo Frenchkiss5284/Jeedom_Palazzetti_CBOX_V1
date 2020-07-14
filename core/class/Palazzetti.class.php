@@ -283,7 +283,8 @@ class Palazzetti extends eqLogic {
 				// force du feu
 				case 'SET+POWR':
 					log::add('Palazzetti', 'debug','Debug : '. json_encode($DATA));
-					$value = $DATA->PWR;
+					$value = $DATA->DATA->PWR;
+					log::add('Palazzetti', 'debug','Debug Value : '. $value);
 				break;
 				// température de consigne
 				case 'GET+SETP': 
