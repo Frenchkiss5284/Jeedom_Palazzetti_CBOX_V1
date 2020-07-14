@@ -282,9 +282,7 @@ class Palazzetti extends eqLogic {
 				break;
 				// force du feu
 				case 'SET+POWR':
-					log::add('Palazzetti', 'debug','Debug : '. json_encode($DATA));
 					$value = $DATA->DATA->PWR;
-					log::add('Palazzetti', 'debug','Debug Value : '. $value);
 				break;
 				// température de consigne
 				case 'GET+SETP': 
@@ -308,7 +306,7 @@ class Palazzetti extends eqLogic {
 				break;
 				// température ambiance
 				case 'GET+TMPS': 
-					$value = $DATA->DATA->T5;
+					$value = $DATA->DATA->T1;
 				break;
 				// programmes horaires
 				case 'GET+CHRD': 
@@ -494,7 +492,7 @@ class Palazzetti extends eqLogic {
 			$FANF4L->save();
 			// mise à jour temperature ambiance
 			$TMP = $this->getCmd(null, 'ITemp');
-			$TMP->event($DATA->DATA->T5);
+			$TMP->event($DATA->DATA->T1);
 			$TMP->save();
 			// mise à jour status poele
 			$STA = $this->getCmd(null, 'IStatus');
