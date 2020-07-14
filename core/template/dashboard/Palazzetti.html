@@ -6,9 +6,7 @@
 		<div class="plugin-all">
 			<div class="container">
 				<div type="button" class="btn btn-xs" id="onoff_action"></div>
-				<div class="status">
-					#status#
-				</div>
+				<div class="status">#status#</div>
 				<div class="temp_ambiante"><span style="font-size:18px">#temperature#°C</span> <br/> T° ambiante</div>
 				<div class="temp_consigne"><span style="font-size:18px">#consigne#°C</span> <br/> T° de consigne</div>
 				<div class="group_container">
@@ -39,193 +37,192 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		var status 		= '#status#'; 
+		var power 			= #power#;
+		var fan 			= '#fan#';
+		var consigne 		= #consigne#;
+		
+		/* on/off */
+		$(function() {
+			if(status == 'OFF' || status == 'OFF TIMER') { 
+				$('#onoff_action').addClass('btn-success').removeClass('btn-danger').text('START'); 
+			} else { 
+				$('#onoff_action').addClass('btn-danger').removeClass('btn-success').text('STOP'); 
+			}
+		});
+		
+		$('#onoff_action').on('click', function(){
+			if(status == 'OFF' || status == 'OFF TIMER') {
+				jeedom.cmd.execute({id: #on_id#});
+				status = "ON";
+			} else {
+				jeedom.cmd.execute({id: #off_id#});
+				status = "OFF";
+			}
+		});
+		
+		/* consigne */
+		$('.eqLogic[data-eqLogic_id=#id#] .consigne-plus').on('click', function () {
+			consigne++;
+			jeedom.cmd.execute({id: #consigne_id#, value: consigne});
+		});	
+		$('.eqLogic[data-eqLogic_id=#id#] .consigne-moins').on('click', function () {
+			consigne--;
+			jeedom.cmd.execute({id: #consigne_id#, value: consigne});
+		});	
+		
+		/* ventilation */
+		$('.eqLogic[data-eqLogic_id=#id#] .fan-plus').on('click', function () {
+			if(fan == 'AUTO') { 
+				fan = 6; 			
+			}
+			fan++; 
+			jeedom.cmd.execute({id: #fan_id#, value: fan});
+		});	
+		
+		$('.eqLogic[data-eqLogic_id=#id#] .fan-moins').on('click', function () {
+			if(fan == 'AUTO') { 
+				fan = 6; 			
+			} else if(fan == 'OFF') {
+				fan = 7;
+			}
+			fan--;
+			jeedom.cmd.execute({id: #fan_id#, value: fan});
+		});	
+		/* force feu */
+		$('.eqLogic[data-eqLogic_id=#id#] .power-plus').on('click', function () {
+			power++;
+			jeedom.cmd.execute({id: #power_id#, value: power});
+		});	
+		$('.eqLogic[data-eqLogic_id=#id#] .power-moins').on('click', function () {
+			power--;
+			jeedom.cmd.execute({id: #power_id#, value: power});
+		});	
+		/* desactivation des actions + / - */
+		$(function() {
+			// desactivation + fan
+			if(fan == 'off') {
+				$('.fan-plus').addClass('disabled');
+			}
+			// desactivation - fan
+			if(parseInt(fan) == 0) {
+				$('.fan-moins').addClass('disabled');
+			}
+			// desactivation + force feu
+			if(power == 5) {
+				$('.power-plus').addClass('disabled');
+			}
+			// desactivation - force feu
+			if(power == 0) {
+				$('.power-moins').addClass('disabled');
+			}
+		});
+		/* planning */
+		$('.eqLogic[data-eqLogic_id=#id#] .calendar').on('click', function () {
+			$('#md_modal').dialog({title: "Planning horaires"});
+				$('#md_modal').load('index.php?v=d&plugin=Palazzetti&modal=planning&id=#id#').dialog('open');
+		});	
+		/* info */
+		$('.eqLogic[data-eqLogic_id=#id#] .info').on('click', function () {
+				$('#md_modal').dialog({title: "Informations"});
+				$('#md_modal').load('index.php?v=d&plugin=Palazzetti&modal=informations&id=#id#').dialog('open');
+		});	
+		/* refresh */
+		$('.eqLogic[data-eqLogic_id=#id#] .refresh').on('click', function () {
+			jeedom.cmd.execute({id: #refresh_id#});
+		});	
+		
+	</script>
+	<style>
+		.plugin-all
+		{
+			display:flex;
+			text-align:center;
+			text-transform:uppercase;
+			font-family:roboto;
+		}
+		.container {
+			width:90%
+			margin:auto;
+		}
+		.status
+		{
+			text-align:center
+		}
+		.temp_ambiante
+		{
+			float:left;
+			font-size:12px;
+		}
+		.temp_consigne
+		{
+			float:right;
+			font-size:12px;
+			color: #f65858;
+		}
+		.group_container
+		{
+			padding-top:20px;
+			clear:both;
+		}
+		.consigne_all
+		{
+			display:flex;
+			margin:10px;
+		}
+		.consigne
+		{
+			font-family: 'Roboto';
+			text-align:center;
+			margin:auto;
+			font-size: 28px;
+			font-weight:bold;
+		}
+		.consigne-moins
+		{
+			margin:auto;
+			font-size:24px;
+			font-weight:bold;
+		}
+		.consigne-plus
+		{
+			margin:auto;
+			font-size:24px;
+			font-weight:bold;
+		}
+		.consigne_title
+		{
+			font-family:roboto;
+			text-align:center;
+			font-size:18px;
+			text-transform:uppercase;
+			font-weight:bold;
+			clear:both;
+		}
+		.fan-moins
+		{
+			margin:auto;
+			font-size:24px;
+			font-weight:bold;
+		}
+		.fan-plus
+		{
+			margin:auto;
+			font-size:24px;
+			font-weight:bold;
+		}
+		.power-moins
+		{
+			margin:auto;
+			font-size:24px;
+			font-weight:bold;
+		}
+		.power-plus
+		{
+			margin:auto;
+			font-size:24px;
+			font-weight:bold;
+		}
+	</style>
 </div>
-<script>
-	var status 		= '#status#'; 
-	var power 			= #power#;
-	var fan 			= '#fan#';
-	var consigne 		= #consigne#;
-	
-	/* on/off */
-	$(function() {
-	if(status == 'OFF' || status == 'OFF TIMER') { 
-	$('#onoff_action').addClass('btn-success').removeClass('btn-danger').text('START'); 
-	} else { 
-	$('#onoff_action').addClass('btn-danger').removeClass('btn-success').text('STOP'); 
-	}
-	});
-	
-	$('#onoff_action').on('click', function(){
-	if(status == 'OFF' || status == 'OFF TIMER') {
-	jeedom.cmd.execute({id: #on_id#});
-	status = "ON";
-	} else {
-	jeedom.cmd.execute({id: #off_id#});
-	status = "OFF";
-	}
-	});
-	
-	/* consigne */
-	$('.eqLogic[data-eqLogic_id=#id#] .consigne-plus').on('click', function () {
-	consigne++;
-	jeedom.cmd.execute({id: #consigne_id#, value: consigne});
-	});	
-	$('.eqLogic[data-eqLogic_id=#id#] .consigne-moins').on('click', function () {
-	consigne--;
-	jeedom.cmd.execute({id: #consigne_id#, value: consigne});
-	});	
-	
-	/* ventilation */
-	$('.eqLogic[data-eqLogic_id=#id#] .fan-plus').on('click', function () {
-	if(fan == 'AUTO') { 
-	fan = 6; 			
-	}
-	fan++; 
-	jeedom.cmd.execute({id: #fan_id#, value: fan});
-	});	
-	
-	$('.eqLogic[data-eqLogic_id=#id#] .fan-moins').on('click', function () {
-	if(fan == 'AUTO') { 
-	fan = 6; 			
-	} else if(fan == 'OFF') {
-	fan = 7;
-	}
-	fan--;
-	jeedom.cmd.execute({id: #fan_id#, value: fan});
-	});	
-	/* force feu */
-	$('.eqLogic[data-eqLogic_id=#id#] .power-plus').on('click', function () {
-	power++;
-	jeedom.cmd.execute({id: #power_id#, value: power});
-	});	
-	$('.eqLogic[data-eqLogic_id=#id#] .power-moins').on('click', function () {
-	power--;
-	jeedom.cmd.execute({id: #power_id#, value: power});
-	});	
-	/* desactivation des actions + / - */
-	$(function() {
-	// desactivation + fan
-	if(fan == 'off') {
-	$('.fan-plus').addClass('disabled');
-	}
-	// desactivation - fan
-	if(parseInt(fan) == 0) {
-	$('.fan-moins').addClass('disabled');
-	}
-	// desactivation + force feu
-	if(power == 5) {
-	$('.power-plus').addClass('disabled');
-	}
-	// desactivation - force feu
-	if(power == 0) {
-	$('.power-moins').addClass('disabled');
-	}
-	});
-	/* planning */
-	$('.eqLogic[data-eqLogic_id=#id#] .calendar').on('click', function () {
-	$('#md_modal').dialog({title: "Planning horaires"});
-	$('#md_modal').load('index.php?v=d&plugin=Palazzetti&modal=planning&id=#id#').dialog('open');
-	});	
-	/* info */
-	$('.eqLogic[data-eqLogic_id=#id#] .info').on('click', function () {
-	$('#md_modal').dialog({title: "Informations"});
-	$('#md_modal').load('index.php?v=d&plugin=Palazzetti&modal=informations&id=#id#').dialog('open');
-	});	
-	/* refresh */
-	$('.eqLogic[data-eqLogic_id=#id#] .refresh').on('click', function () {
-	jeedom.cmd.execute({id: #refresh_id#});
-	});	
-	
-</script>
-</div>
-<style>
-	.plugin-all
-	{
-	display:flex;
-	text-align:center;
-	text-transform:uppercase;
-	font-family:roboto;
-	}
-	.container {
-	width:90%
-	margin:auto;
-	}
-	.status
-	{
-	text-align:center
-	}
-	.temp_ambiante
-	{
-	float:left;
-	font-size:12px;
-	}
-	.temp_consigne
-	{
-	float:right;
-	font-size:12px;
-	color: #f65858;
-	}
-	.group_container
-	{
-	padding-top:20px;
-	clear:both;
-	}
-	.consigne_all
-	{
-	display:flex;
-	margin:10px;
-	}
-	.consigne
-	{
-	font-family: 'Roboto';
-	text-align:center;
-	margin:auto;
-	font-size: 28px;
-	font-weight:bold;
-	}
-	.consigne-moins
-	{
-	margin:auto;
-	font-size:24px;
-	font-weight:bold;
-	}
-	.consigne-plus
-	{
-	margin:auto;
-	font-size:24px;
-	font-weight:bold;
-	}
-	.consigne_title
-	{
-	font-family:roboto;
-	text-align:center;
-	font-size:18px;
-	text-transform:uppercase;
-	font-weight:bold;
-	clear:both;
-	}
-	.fan-moins
-	{
-	margin:auto;
-	font-size:24px;
-	font-weight:bold;
-	}
-	.fan-plus
-	{
-	margin:auto;
-	font-size:24px;
-	font-weight:bold;
-	}
-	.power-moins
-	{
-	margin:auto;
-	font-size:24px;
-	font-weight:bold;
-	}
-	.power-plus
-	{
-	margin:auto;
-	font-size:24px;
-	font-weight:bold;
-	}
-</style>
