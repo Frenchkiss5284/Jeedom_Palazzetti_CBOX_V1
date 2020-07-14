@@ -35,7 +35,7 @@ class Palazzetti extends eqLogic {
 			'WOff'=>array('Libelle'=>'Extinction poêle','actionCmd'=>'CMD+OFF','updateLogicalId'=>'IStatus','LogicalId'=>'WOff','Type'=>'action', 'SubType' => 'other','Unite'=>'','visible' => 0, 'Template' => ''),
 			'RStatus'=>array('Libelle'=>'Lecture état poêle','actionCmd'=>'GET+STAT','updateLogicalId'=>'IStatus','LogicalId'=>'RStatus','Type'=>'action', 'SubType' => 'other','Unite'=>'','visible' => 0, 'Template' => ''),
 			'Status'=>array('Libelle'=>'Etat poêle','actionCmd'=>'','updateLogicalId'=>'','LogicalId'=>'IStatus','Type'=>'info', 'SubType' => 'string','Unite'=>'','visible' => 1, 'Template' => ''),
-			'Name'=>array('Libelle'=>'Nom','actionCmd'=>'','updateLogicalId'=>'','LogicalId'=>'IStatus','Type'=>'info', 'SubType' => 'string', 'visible' => 1,'Unite'=>'','Template' => ''),
+			'Name'=>array('Libelle'=>'Nom','actionCmd'=>'','updateLogicalId'=>'','LogicalId'=>'IName','Type'=>'info', 'SubType' => 'string', 'visible' => 1,'Unite'=>'','Template' => ''),
 			'WName'=>array('Libelle'=>'Ecrire nom','actionCmd'=>'SET+LABL+','updateLogicalId'=>'IName','LogicalId'=>'WName','Type'=>'action', 'SubType' => 'other','Unite'=>'','visible' => 1, 'Template' => ''),
 			'RName'=>array('Libelle'=>'Lire nom','actionCmd'=>'GET+LABL','updateLogicalId'=>'IName','LogicalId'=>'RName','Type'=>'action', 'SubType' => 'other','Unite'=>'','visible' => 0, 'Template' => ''),
 			'WPower'=>array('Libelle'=>'Ecrire force du feu','actionCmd'=>'SET+POWR+','updateLogicalId'=>'IPower','nparams'=>1,'parameters'=>'#slider#','minValue'=>'1','maxValue'=>'5','LogicalId'=>'WPower','Type'=>'action','SubType'=>'slider','Unite'=>'','visible' => 0,'Template'=>''),
