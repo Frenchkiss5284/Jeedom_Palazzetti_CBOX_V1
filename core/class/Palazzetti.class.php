@@ -282,7 +282,7 @@ class Palazzetti extends eqLogic {
 				break;
 				// force du feu
 				case 'SET+POWR':
-					$value = $DATA->POWER->POWER;
+					$value = $DATA->PWR;
 				break;
 				// température de consigne
 				case 'GET+SETP': 
