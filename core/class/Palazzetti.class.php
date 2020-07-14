@@ -71,8 +71,8 @@ class Palazzetti extends eqLogic {
 			'IHeuresDepuisEntretien'=>array('Libelle'=>'Nombre d\'heures depuis entretien','actionCmd'=>'','updateLogicalId'=>'','nparams'=>0,'parameters'=>'','minValue'=>'','maxValue'=>'','LogicalId'=>'IHeuresDepuisEntretien','Type'=>'info','SubType'=>'string','Unite'=>'','IsHistorized'=>false,'visible'=>0, 'Template' => ''),
 		
 			
-			'Temp'=>array('Libelle'=>'Temperature ambiance','LogicalId'=>'ITemp','Type'=>'info','SubType'=>'numeric','Unite'=>'°C','IsHistorized'=>true,'visible'=>1, 'Template' => ''),
-			'Consigne'=>array('Libelle'=>'Temperature de consigne','LogicalId'=>'IConsigne','Type'=>'info','SubType'=>'numeric','Unite'=>'°C','visible' => 1, 'Template' => '')
+			'Temp'=>array('Libelle'=>'Temperature ambiance','LogicalId'=>'ITemp','Type'=>'action','SubType'=>'numeric','Unite'=>'°C','IsHistorized'=>true,'visible'=>1,'Template'=>''),
+			'Consigne'=>array('Libelle'=>'Temperature de consigne','LogicalId'=>'IConsigne','action'=>'info','SubType'=>'numeric','Unite'=>'°C','visible'=>1,'Template'=>'')
 		);
 
 		//Chaque commande
