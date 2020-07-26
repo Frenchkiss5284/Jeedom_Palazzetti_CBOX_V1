@@ -134,13 +134,18 @@ class Palazzetti extends eqLogic {
 
 	// methode requete
 	public function makeRequest($cmd) {
-		$url = 'http://' . $this->getConfiguration('addressip') . '/cgi-bin/sendmsg.lua?cmd=' . $cmd;
+		$url = 'http://' . $this->getConfiguration('addressip') . '/sendmsg.php?cmd=' . $cmd;
 		log::add('Palazzetti', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'get URL '. $url);
         
         $request_http = new com_http($url);
 		$return = $request_http->exec(10);
+		
+		log::add('Palazzetti', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'return :  '. $return);
+		
 		$return = json_decode($return);
-		if($return->INFO->RSP != 'OK') {
+		
+		if($return->Info->RSP != 'OK') {
+			log::add('Palazzetti', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' réponse erreur ' . $cmd);
 			return false;
 		} else {
 			return $return;
@@ -256,17 +261,28 @@ class Palazzetti extends eqLogic {
 				log::add('Palazzetti', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. ' commande ' . json_encode($_options));
 			}
 			$DATA = $this->makeRequest($cmdString) ;
-                
-			if($DATA == false) { return 'ERROR'; }
+
+			if($DATA == false) 
+			{ 
+		log::add('Palazzetti', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' $DATA == false ');	
+		return 'ERROR'; 
+		}
 			// verification succes du traitement
-			if($DATA->INFO->RSP != 'OK') {
-				log::add('Palazzetti', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' erreur ' .$CMD. ' : '. $DATA->INFO->RSP);
+			if($DATA->Info->RSP != 'OK') {
+				log::add('Palazzetti', 'error','('.__LINE__.') ' . __FUNCTION__.' - '. ' réponse erreur ' . $DATA->Info->RSP);
 				return false;
 			} 
+			
+			log::add('Palazzetti', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. ' definition patern de comparaison ' . $cmdString);	
 			// definition patern de comparaison
 			$expl = explode('+',$cmdString);
+			log::add('Palazzetti', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. ' explode ' . $expl);	
 			$pattern = $expl[0] . '+' . $expl[1];
-
+				
+				if (strpos($pattern, 'SET+') !== false) {
+ // recuperation de toutes les informations
+    	$this->getInformations();
+}
 			// traitement suivant commande
 			switch($pattern) {
 				// allumage, extinction, status
@@ -281,20 +297,21 @@ class Palazzetti extends eqLogic {
 					$value = $DATA->StoveData->LABEL;
 				break;
 				// force du feu
+				// force du feu
 				case 'SET+POWR':
-					$value = $DATA->DATA->PWR;
+					$value = $DATA->Power->POWER;
 				break;
 				// température de consigne
 				case 'GET+SETP': 
 				case 'SET+SETP':
-					$value = $DATA->DATA->SETP;
+					$value = $DATA->Setpoint->SETP;
 				break;
 				// force du ventilateur
 				case 'GET+FAND': 
 					$value = $this->getFanState($DATA->Fans->FAN_FAN2LEVEL);
 				break;
 				case 'SET+RFAN':
-					$value = $this->getFanState($DATA->DATA->F2L);
+					$value = $this->getFanState($DATA->RoomFan->FAN_FAN2LEVEL);
 				break;
 				// force ventilateur F3L
 				case 'SET+FN3L':
@@ -306,11 +323,11 @@ class Palazzetti extends eqLogic {
 				break;
 				// température ambiance
 				case 'GET+TMPS': 
-					$value = $DATA->DATA->T1;
+					$value = $DATA->Temperatures->TMP_ROOM_WATER;
 				break;
 				// programmes horaires
 				case 'GET+CHRD': 
-					$value = json_encode($DATA->DATA);
+					$value = json_encode($DATA->{'Chrono Info'});
 				break;
 				// programmes horaires
 				case 'SET+CSST': 
@@ -321,8 +338,8 @@ class Palazzetti extends eqLogic {
 				break;
 				// informations automate
 				case 'EXT+ADRD':
-                    $value = $DATA->DATA->{'ADDR_' . $expl[2]};
-					log::add('Palazzetti', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'reponse '. $value);
+					$value = $DATA->Data->{'ADDR_'+ $expl[2]};
+					log::add('Palazzetti', 'debug','('.__LINE__.') ' . __FUNCTION__.' - '. 'response '. $value);
 				break;
 			}
         
@@ -398,7 +415,7 @@ class Palazzetti extends eqLogic {
 		if($DATA != false) { 
 			// mise à jour nom du poêle
 			$TIME = $this->getCmd(null, 'ITime');
-			$TIME->event(json_encode($DATA));
+				$TIME->event(json_encode($DATA->{'DateTime'}));
 			$TIME->save();
 		}
 
@@ -407,7 +424,7 @@ class Palazzetti extends eqLogic {
 		if($DATA != false) { 
 			// mise à jour nom du poêle
 			$LABL = $this->getCmd(null, 'IName');
-			$LABL->event($DATA->STOVEDATA->LABEL);
+			$LABL->event($DATA->StoveData->LABEL);
 			$LABL->save();
 			// mise à jour force du feu
 			$POWR = $this->getCmd(null, 'INetwork');
@@ -420,7 +437,7 @@ class Palazzetti extends eqLogic {
 		if($DATA != false) { 
 			// mise à jour programmes horaires
 			$PH = $this->getCmd(null, 'IPH');
-			$PH->event(json_encode($DATA->DATA));
+			$PH->event(json_encode($DATA->{'Chrono Info'}));
 			$PH->save();
 		}
 
@@ -428,21 +445,21 @@ class Palazzetti extends eqLogic {
     	$DATA = $this->makeRequest('EXT+ADRD+2066+1');
 		if($DATA != false) { 
 			$EXT = $this->getCmd(null, 'INbAllumage');
-			$EXT->event($DATA->DATA->ADDR_2066);
+			$EXT->event($DATA->Data->ADDR_2066);
 			$EXT->save();
 		}
 
     	$DATA = $this->makeRequest('EXT+ADRD+207C+1');
 		if($DATA != false) { 
 			$EXT = $this->getCmd(null, 'INbAllumageFailed');
-			$EXT->event($DATA->DATA->ADDR_207C);
+			$EXT->event($DATA->Data->ADDR_207C);
 			$EXT->save();
 		}
 
     	$DATA = $this->makeRequest('EXT+ADRD+206A+1');
 		if($DATA != false) { 
 			$EXT = $this->getCmd(null, 'IHeuresAlimElec');
-			$EXT->event($DATA->DATA->ADDR_206A);
+			$EXT->event($DATA->Data->ADDR_206A);
 			$EXT->save();
 		}
 
@@ -456,14 +473,14 @@ class Palazzetti extends eqLogic {
     	$DATA = $this->makeRequest('EXT+ADRD+207A+1');
 		if($DATA != false) { 
 			$EXT = $this->getCmd(null, 'IHeuresSurChauffe');
-			$EXT->event($DATA->DATA->ADDR_207A);
+			$EXT->event($DATA->Data->ADDR_207A);
 			$EXT->save();
 		}
 
     	$DATA = $this->makeRequest('EXT+ADRD+2076+1');
 		if($DATA != false) { 
 			$EXT = $this->getCmd(null, 'IHeuresDepuisEntretien');
-			$EXT->event($DATA->DATA->ADDR_2076);
+			$EXT->event($DATA->Data->ADDR_2076);
 			$EXT->save();
 		}
 
@@ -472,15 +489,15 @@ class Palazzetti extends eqLogic {
 		if($DATA != false) { 
 			// mise à jour force du feu
 			$POWR = $this->getCmd(null, 'IPower');
-			$POWR->event($DATA->DATA->PWR);
+			$POWR->event($DATA->{'All Data'}->POWER);
 			$POWR->save();
 			// mise à jour température de consigne
 			$TCON = $this->getCmd(null, 'IConsigne');
-			$TCON->event($DATA->DATA->SETP);
+			$TCON->event($DATA->{'All Data'}->SETP);
 			$TCON->save();
 			// mise à jour force du ventilateur
 			$FAN = $this->getCmd(null, 'IFan');
-			$FAN->event($DATA->DATA->F2L);
+			$FAN->event($DATA->{'All Data'}->FAN_FAN2LEVEL);
 			$FAN->save();
 			// mise à jour force du ventilateur 3 F3L
 			$FANF3L = $this->getCmd(null, 'IFanF3L');
@@ -492,21 +509,20 @@ class Palazzetti extends eqLogic {
 			$FANF4L->save();
 			// mise à jour temperature ambiance
 			$TMP = $this->getCmd(null, 'ITemp');
-			$TMP->event($DATA->DATA->T1);
+			$TMP->event($DATA->{'All Data'}->TMP_ROOM_WATER);
 			$TMP->save();
 			// mise à jour status poele
 			$STA = $this->getCmd(null, 'IStatus');
-			$STA->event($DATA->DATA->STATUS);
+			$STA->event($DATA->{'All Data'}->STATUS);
 			$STA->save();
 
 			// mise a jour variables snap
 			$SNAP = $this->getCmd(null, 'ISnap');
-			$SNAP->event(json_encode($DATA));
+			$SNAP->event(json_encode($DATA->{'All Data'}));
 			$SNAP->save();
 		}
 
 	}
-
 }
 
 class PalazzettiCmd extends cmd {
